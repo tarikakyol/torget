@@ -1,5 +1,4 @@
 var request = require('request');
-var uncompress = require('compress-buffer').uncompress;
 var _ = require('underscore');
 
 var url = 'http://kickass.to/json.php?q=';
@@ -27,14 +26,6 @@ exports.search = function(query, callback) {
             return callback(new Error('status code not 200 - code is: ' + response.statusCode));
         } else {
             var encoding = response.headers['content-encoding'];
-            if (encoding && encoding.indexOf('gzip') >= 0) {
-                try {
-                    body = uncompress(body);
-                } catch (compError) {
-                    return callback(compError);
-                }
-            }
-
             try {
                 var resp = JSON.parse(body);
                 var sorted = _.sortBy(resp.list, function(x) { return -x['votes']; });
